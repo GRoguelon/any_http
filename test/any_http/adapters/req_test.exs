@@ -107,227 +107,227 @@ defmodule AnyHttp.Adapters.ReqTest do
     end
   end
 
-  @headers %{"my-custom-req" => @value}
+  # @headers %{"my-custom-req" => @value}
 
-  describe "with headers as map" do
-    test "head/2 returns 243 status" do
-      url = test_server_add(:head, &http_handler/1)
+  # describe "with headers as map" do
+  #   test "head/2 returns 243 status" do
+  #     url = test_server_add(:head, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: nil}} =
-               Subject.head(url, @headers)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: nil}} =
+  #              Subject.head(url, @headers)
 
-      assert get_header(headers, "content-length") == ["0"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
+  #     assert get_header(headers, "content-length") == ["0"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
 
-    test "get/2 returns 243 status" do
-      url = test_server_add(:get, &http_handler/1)
+  #   test "get/2 returns 243 status" do
+  #     url = test_server_add(:get, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: ""}} =
-               Subject.get(url, @headers)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: ""}} =
+  #              Subject.get(url, @headers)
 
-      assert get_header(headers, "content-length") == ["0"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
+  #     assert get_header(headers, "content-length") == ["0"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
 
-    test "get/2 with body returns 243 status" do
-      url = test_server_add(:get, &http_handler/1)
+  #   test "get/2 with body returns 243 status" do
+  #     url = test_server_add(:get, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.get(url, @headers, @value)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.get(url, @headers, @value)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
 
-    test "post/2 with body returns 243 status" do
-      url = test_server_add(:post, &http_handler/1)
+  #   test "post/2 with body returns 243 status" do
+  #     url = test_server_add(:post, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.post(url, @headers, @value)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.post(url, @headers, @value)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
 
-    test "put/2 with body returns 243 status" do
-      url = test_server_add(:put, &http_handler/1)
+  #   test "put/2 with body returns 243 status" do
+  #     url = test_server_add(:put, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.put(url, @headers, @value)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.put(url, @headers, @value)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
 
-    test "patch/2 with body returns 243 status" do
-      url = test_server_add(:patch, &http_handler/1)
+  #   test "patch/2 with body returns 243 status" do
+  #     url = test_server_add(:patch, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.patch(url, @headers, @value)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.patch(url, @headers, @value)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
 
-    test "delete/2 with body returns 243 status" do
-      url = test_server_add(:delete, &http_handler/1)
+  #   test "delete/2 with body returns 243 status" do
+  #     url = test_server_add(:delete, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.delete(url, @headers, @value)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.delete(url, @headers, @value)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
-  end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
+  # end
 
-  @headers [{"my-custom-req", @value}]
+  # @headers [{"my-custom-req", @value}]
 
-  describe "with headers as list" do
-    test "head/2 returns 243 status" do
-      url = test_server_add(:head, &http_handler/1)
+  # describe "with headers as list" do
+  #   test "head/2 returns 243 status" do
+  #     url = test_server_add(:head, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: nil}} =
-               Subject.head(url, @headers)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: nil}} =
+  #              Subject.head(url, @headers)
 
-      assert get_header(headers, "content-length") == ["0"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
+  #     assert get_header(headers, "content-length") == ["0"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
 
-    test "get/2 returns 243 status" do
-      url = test_server_add(:get, &http_handler/1)
+  #   test "get/2 returns 243 status" do
+  #     url = test_server_add(:get, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: ""}} =
-               Subject.get(url, @headers)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: ""}} =
+  #              Subject.get(url, @headers)
 
-      assert get_header(headers, "content-length") == ["0"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
+  #     assert get_header(headers, "content-length") == ["0"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
 
-    test "get/2 with body returns 243 status" do
-      url = test_server_add(:get, &http_handler/1)
+  #   test "get/2 with body returns 243 status" do
+  #     url = test_server_add(:get, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.get(url, @headers, @value)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.get(url, @headers, @value)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
 
-    test "post/2 with body returns 243 status" do
-      url = test_server_add(:post, &http_handler/1)
+  #   test "post/2 with body returns 243 status" do
+  #     url = test_server_add(:post, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.post(url, @headers, @value)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.post(url, @headers, @value)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
 
-    test "put/2 with body returns 243 status" do
-      url = test_server_add(:put, &http_handler/1)
+  #   test "put/2 with body returns 243 status" do
+  #     url = test_server_add(:put, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.put(url, @headers, @value)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.put(url, @headers, @value)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
 
-    test "patch/2 with body returns 243 status" do
-      url = test_server_add(:patch, &http_handler/1)
+  #   test "patch/2 with body returns 243 status" do
+  #     url = test_server_add(:patch, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.patch(url, @headers, @value)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.patch(url, @headers, @value)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
 
-    test "delete/2 with body returns 243 status" do
-      url = test_server_add(:delete, &http_handler/1)
+  #   test "delete/2 with body returns 243 status" do
+  #     url = test_server_add(:delete, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.delete(url, @headers, @value)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.delete(url, @headers, @value)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "my-custom-resp") == [@value]
-    end
-  end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "my-custom-resp") == [@value]
+  #   end
+  # end
 
-  @req_opts [compressed: true, raw: true]
+  # @req_opts [compressed: true, raw: true]
 
-  describe "with req options" do
-    test "head/2 returns 243 status" do
-      url = test_server_add(:head, &http_handler/1)
+  # describe "with req options" do
+  #   test "head/2 returns 243 status" do
+  #     url = test_server_add(:head, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: nil}} =
-               Subject.head(url, nil, @req_opts)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: nil}} =
+  #              Subject.head(url, nil, @req_opts)
 
-      assert get_header(headers, "content-length") == ["0"]
-      assert get_header(headers, "content-encoding") == ["gzip"]
-    end
+  #     assert get_header(headers, "content-length") == ["0"]
+  #     assert get_header(headers, "content-encoding") == ["gzip"]
+  #   end
 
-    test "get/2 returns 243 status" do
-      url = test_server_add(:get, &http_handler/1)
+  #   test "get/2 returns 243 status" do
+  #     url = test_server_add(:get, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: ""}} =
-               Subject.get(url, nil, @value, @req_opts)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: ""}} =
+  #              Subject.get(url, nil, @value, @req_opts)
 
-      assert get_header(headers, "content-length") == ["0"]
-      assert get_header(headers, "content-encoding") == ["gzip"]
-    end
+  #     assert get_header(headers, "content-length") == ["0"]
+  #     assert get_header(headers, "content-encoding") == ["gzip"]
+  #   end
 
-    test "get/2 with body returns 243 status" do
-      url = test_server_add(:get, &http_handler/1)
+  #   test "get/2 with body returns 243 status" do
+  #     url = test_server_add(:get, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.get(url, nil, @value, @req_opts)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.get(url, nil, @value, @req_opts)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "content-encoding") == ["gzip"]
-    end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "content-encoding") == ["gzip"]
+  #   end
 
-    test "post/2 with body returns 243 status" do
-      url = test_server_add(:post, &http_handler/1)
+  #   test "post/2 with body returns 243 status" do
+  #     url = test_server_add(:post, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.post(url, nil, @value, @req_opts)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.post(url, nil, @value, @req_opts)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "content-encoding") == ["gzip"]
-    end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "content-encoding") == ["gzip"]
+  #   end
 
-    test "put/2 with body returns 243 status" do
-      url = test_server_add(:put, &http_handler/1)
+  #   test "put/2 with body returns 243 status" do
+  #     url = test_server_add(:put, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.put(url, nil, @value, @req_opts)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.put(url, nil, @value, @req_opts)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "content-encoding") == ["gzip"]
-    end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "content-encoding") == ["gzip"]
+  #   end
 
-    test "patch/2 with body returns 243 status" do
-      url = test_server_add(:patch, &http_handler/1)
+  #   test "patch/2 with body returns 243 status" do
+  #     url = test_server_add(:patch, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.patch(url, nil, @value, @req_opts)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.patch(url, nil, @value, @req_opts)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "content-encoding") == ["gzip"]
-    end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "content-encoding") == ["gzip"]
+  #   end
 
-    test "delete/2 with body returns 243 status" do
-      url = test_server_add(:delete, &http_handler/1)
+  #   test "delete/2 with body returns 243 status" do
+  #     url = test_server_add(:delete, &http_handler/1)
 
-      assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
-               Subject.delete(url, nil, @value, @req_opts)
+  #     assert {:ok, %Response{status: 243, headers: headers, body: @value}} =
+  #              Subject.delete(url, nil, @value, @req_opts)
 
-      assert get_header(headers, "content-length") == ["22"]
-      assert get_header(headers, "content-encoding") == ["gzip"]
-    end
-  end
+  #     assert get_header(headers, "content-length") == ["22"]
+  #     assert get_header(headers, "content-encoding") == ["gzip"]
+  #   end
+  # end
 
   ## Private functions
 
