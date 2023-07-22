@@ -38,11 +38,26 @@ end
 Just call the `AnyHttp` module to interact with HTTP:
 
 ```elixir
-AnyHttp.post("https://my_server/api", %{"content-type" => "application/json"}, %{hello: "world"}, receive_timeout: :timer.seconds(5))
+AnyHttp.post(
+  # Provide the URL as a string or an URI
+  "https://my_server/api",
+  # Provide the HTTP headers as map or list of tuple, put nil if none
+  [{"content-type", "application/json"}],
+  # Provide the body, put nil if none
+  %{hello: "world"},
+  # Provide the adapter options, can be ommited
+  receive_timeout: :timer.seconds(5)
+)
 ```
 
 The result will look like:
 
 ```elixir
-{:ok, %AnyHttp.Response{status: 201, headers: [{"content-type", "application/json"}], body: %{"bye" => "world"}}}
+{:ok,
+  %AnyHttp.Response{
+    status: 201,
+    headers: [{"content-type", "application/json"}],
+    body: %{"bye" => "world"}
+  }
+}
 ```
