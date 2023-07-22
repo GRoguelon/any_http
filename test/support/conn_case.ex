@@ -1,4 +1,8 @@
 defmodule AnyHttp.ConnCase do
+  @moduledoc """
+  Provides a base to test the HTTP adapters
+  """
+
   use ExUnit.CaseTemplate
 
   using do
