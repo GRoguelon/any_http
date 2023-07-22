@@ -10,6 +10,11 @@ defmodule AnyHttp.MixProject do
       elixirc_options: [debug_info: Mix.env() == :dev],
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      package: package(),
+      name: "Any HTTP",
+      description: "Elixir library to wrap the main HTTP libraries",
+      source_url: "https://github.com/GRoguelon/any_http",
+      docs: docs(),
       dialyzer: dialyzer()
     ]
   end
@@ -18,6 +23,17 @@ defmodule AnyHttp.MixProject do
   def application do
     [
       extra_applications: [:logger]
+    ]
+  end
+
+  defp docs do
+    [
+      formatters: ["html"],
+      main: "readme",
+      extras: ["README.md"],
+      groups_for_modules: [
+        Adapters: [AnyHttp.Adapters.Req]
+      ]
     ]
   end
 
@@ -32,11 +48,23 @@ defmodule AnyHttp.MixProject do
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
+  defp package do
+    [
+      # These are the default files included in the package
+      files: ~w[lib mix.exs README* LICENSE*],
+      licenses: ["MIT"],
+      links: %{
+        "Github" => "https://github.com/GRoguelon/any_http"
+      }
+    ]
+  end
+
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.3", only: [:dev], runtime: false},
+      {:ex_doc, "~> 0.29", only: :dev, runtime: false},
       {:req, "~> 0.3", optional: true},
       {:test_server, "~> 0.1", only: [:test]}
     ]
