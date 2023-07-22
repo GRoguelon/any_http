@@ -1,0 +1,61 @@
+name: Continuous Delivery
+
+on:
+  release:
+    types: [published]
+
+concurrency:
+  group: release
+  cancel-in-progress: true
+
+env:
+  ERLANG_VERSION: 22.3.4.26
+  ELIXIR_VERSION: 1.12.3
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        id: beam
+        with:
+          otp-version: ${{ env.ERLANG_VERSION }}
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+
+      - name: Restore dev cache
+        id: cache_restore
+        uses: actions/cache/restore@v3
+        with:
+          key: |
+            dev-${{ runner.os }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            dev-${{ runner.os }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}-
+          path: |
+            deps/
+            _build/dev
+
+      - name: Setup the dependencies
+        if: steps.cache_restore.outputs.cache-hit != 'true'
+        run: mix do local.hex --if-missing --force, local.rebar --if-missing --force, deps.get, deps.compile, compile --force
+
+      - name: Save dev cache
+        uses: actions/cache/save@v3
+        if: steps.cache_restore.outputs.cache-hit != 'true'
+        with:
+          key: |
+            dev-${{ runner.os }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
+          path: |
+            deps/
+            _build/dev
+
+      - name: Publish package
+        env:
+          HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
+        run: |
+          mix hex.publish --yes
