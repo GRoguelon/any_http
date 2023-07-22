@@ -29,8 +29,10 @@ if Code.ensure_loaded?(Req) do
     def head(url, headers, opts \\ []) do
       req_opts = do_req_opts(url, headers, nil, opts)
       result = Req.head(url, req_opts)
+      {:ok, response} = parse_result(result)
 
-      parse_result(result)
+      # A response to a HEAD request SHOULD NOT have a body.
+      {:ok, %{response | body: nil}}
     end
 
     @impl true
@@ -90,7 +92,7 @@ if Code.ensure_loaded?(Req) do
       opts |> filter_req_opts() |> process_headers(headers) |> process_body(body)
     end
 
-    @allow_list ~w[connect_options compressed decode_body pool_timeout receive_timeout]a
+    @allow_list ~w[connect_options compressed decode_body pool_timeout raw receive_timeout]a
 
     @spec filter_req_opts(any()) :: req_opts()
     defp filter_req_opts(opts) when is_list(opts) do
@@ -102,6 +104,10 @@ if Code.ensure_loaded?(Req) do
     end
 
     @spec process_headers(req_opts(), nil | headers()) :: req_opts()
+    defp process_headers(opts, headers) when is_map(headers) do
+      headers |> Enum.to_list() |> then(&process_headers(opts, &1))
+    end
+
     defp process_headers(opts, headers) when is_list(headers) and headers != [] do
       [{:headers, headers} | opts]
     end
