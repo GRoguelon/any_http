@@ -10,6 +10,6 @@ defmodule AnyHttp.Response do
   @type t :: %__MODULE__{
           status: pos_integer(),
           headers: [{binary(), binary()}],
-          body: binary()
+          body: nil | binary()
         }
 end
