@@ -99,6 +99,6 @@ defmodule AnyHttp do
   else
     @doc false
     @spec adapter() :: module()
-    def adapter, do: Application.get_env(:any_http, :client_adapter, AnyHttp.Req)
+    def adapter, do: Application.get_env(:any_http, :client_adapter, AnyHttp.Adapters.Req)
   end
 end
