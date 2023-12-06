@@ -5,7 +5,7 @@ defmodule AnyHttp.MixProject do
     [
       app: :any_http,
       version: "0.1.1",
-      elixir: "~> 1.12",
+      elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       elixirc_options: [debug_info: Mix.env() == :dev],
       start_permanent: Mix.env() == :prod,
@@ -22,7 +22,8 @@ defmodule AnyHttp.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :req]
+      # mod: {AnyHttp.Application, []}
     ]
   end
 
