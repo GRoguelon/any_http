@@ -71,7 +71,7 @@ jobs:
 
       - name: Setup the dependencies
         if: steps.cache_restore.outputs.cache-hit != 'true'
-        run: mix do local.hex --if-missing --force, local.rebar --if-missing --force, deps.get, deps.compile, compile --force
+        run: mix do deps.get, deps.compile, compile --force
 
       - name: Save dev cache
         uses: actions/cache/save@v3
@@ -131,62 +131,47 @@ jobs:
       - name: Run dialyzer
         run: mix dialyzer --format github
 
-  # test:
-  #   name: Test
-  #   runs-on: ubuntu-20.04
-  #   timeout-minutes: 10
-  #   strategy:
-  #     matrix:
-  #       erlang: [22.3.4.26, 23.3.4.18, 24.3.4.12, 25.3.2.1, 26.0]
-  #       elixir: [1.12.3, 1.13.4, 1.14.5]
-  #       exclude:
-  #         - erlang: 22.3.4.26
-  #           elixir: 1.14.5
-  #         - erlang: 26.0
-  #           elixir: 1.13.4
-  #         - erlang: 25.3.2.1
-  #           elixir: 1.12.3
-  #         - erlang: 26.0
-  #           elixir: 1.12.3
+  test:
+    name: Test
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
 
-  #   steps:
-  #     - name: Git checkout
-  #       uses: actions/checkout@v3
+      - name: Set up Erlang and Elixir
+        id: beam
+        uses: erlef/setup-beam@v1
+        with:
+          version-type: "strict"
+          version-file: ".tool-versions"
+          install-hex: true
+          install-rebar: true
 
-  #     - name: Set up Elixir
-  #       uses: erlef/setup-beam@v1
-  #       id: beam
-  #       with:
-  #         otp-version: ${{ matrix.erlang }}
-  #         elixir-version: ${{ matrix.elixir }}
+      - name: Restore the cache
+        id: cache_restore
+        uses: actions/cache/restore@v3
+        with:
+          key: ${{ runner.os }}-${{ runner.arch }}-erlang-${{ steps.beam.outputs.otp-version }}-elixir-${{ steps.beam.outputs.elixir-version }}-mix-test-${{ hashFiles('mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ runner.arch }}-erlang-${{ steps.beam.outputs.otp-version }}-elixir-${{ steps.beam.outputs.elixir-version }}-mix-test-
+          path: |
+            deps/
+            _build/test/
 
-  #     - name: Restore test cache
-  #       id: cache_restore
-  #       uses: actions/cache/restore@v3
-  #       with:
-  #         key: |
-  #           test-${{ runner.os }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
-  #         restore-keys: |
-  #           test-${{ runner.os }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}-
-  #         path: |
-  #           deps/
-  #           _build/test
+      - name: Setup the dependencies
+        if: steps.cache_restore.outputs.cache-hit != 'true'
+        env:
+          MIX_ENV: test
+        run: mix do deps.get, deps.compile, compile --force
 
-  #     - name: Setup the dependencies
-  #       if: steps.cache_restore.outputs.cache-hit != 'true'
-  #       env:
-  #         MIX_ENV: test
-  #       run: mix do local.hex --if-missing --force, local.rebar --if-missing --force, deps.get, deps.compile, compile --force
+      - name: Save test cache
+        uses: actions/cache/save@v3
+        if: steps.cache_restore.outputs.cache-hit != 'true'
+        with:
+          key: ${{ runner.os }}-${{ runner.arch }}-erlang-${{ steps.beam.outputs.otp-version }}-elixir-${{ steps.beam.outputs.elixir-version }}-mix-test-${{ hashFiles('mix.lock') }}
+          path: |
+            deps/
+            _build/test/
 
-  #     - name: Save test cache
-  #       uses: actions/cache/save@v3
-  #       if: steps.cache_restore.outputs.cache-hit != 'true'
-  #       with:
-  #         key: |
-  #           test-${{ runner.os }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
-  #         path: |
-  #           deps/
-  #           _build/test
-
-  #     - name: Run test
-  #       run: mix test
+      - name: Run test
+        run: mix test
