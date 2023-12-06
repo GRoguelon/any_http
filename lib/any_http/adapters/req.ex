@@ -28,7 +28,7 @@ if Code.ensure_loaded?(Req) do
 
     @spec add_req_headers(req, headers) :: req when req: Req.Request.t(), headers: T.headers()
     defp add_req_headers(%Req.Request{} = req, headers) when is_list(headers) and headers != [] do
-      Req.Request.merge_options(req, headers: headers)
+      Req.update(req, headers: headers)
     end
 
     defp add_req_headers(%Req.Request{} = req, _headers), do: req
@@ -37,7 +37,7 @@ if Code.ensure_loaded?(Req) do
           when req: Req.Request.t(), body: T.body(), method: T.method()
     defp add_req_body(%Req.Request{} = req, body, method)
          when not is_nil(body) and method != :head do
-      Req.Request.merge_options(req, body: body)
+      Req.update(req, body: body)
     end
 
     defp add_req_body(%Req.Request{} = req, _body, _method), do: req
@@ -54,7 +54,9 @@ if Code.ensure_loaded?(Req) do
 
     @spec parse_result(Req.Response.t()) :: Response.t()
     defp parse_result(%Req.Response{} = response) do
-      %Response{status: response.status, headers: response.headers, body: response.body}
+      body = if(response.body != "", do: response.body)
+
+      %Response{status: response.status, headers: response.headers, body: body}
     end
   end
 end
