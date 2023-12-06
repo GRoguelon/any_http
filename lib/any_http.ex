@@ -15,11 +15,11 @@ defmodule AnyHttp do
 
   @type method :: :head | :get | :post | :put | :patch | :delete
 
-  @type url :: binary()
+  @type url :: URI.t() | binary()
 
-  @type headers :: Enumerable.t({binary(), binary()}) | %{binary() => [binary()]}
+  @type headers :: nil | Enumerable.t()
 
-  @type body :: binary()
+  @type body :: nil | binary()
 
   @type adapter_opts :: Keyword.t()
 
@@ -27,7 +27,7 @@ defmodule AnyHttp do
 
   ## Public functions
 
-  @spec request(method(), URI.t() | url(), headers(), body(), adapter_opts()) :: response()
+  @spec request(method(), url(), headers(), body(), adapter_opts()) :: response()
   def request(method, url, headers, body, adapter_opts \\ [])
 
   def request(method, %URI{} = uri, headers, body, adapter_opts) do
@@ -43,7 +43,7 @@ defmodule AnyHttp do
   @doc """
   Makes a HEAD request to the given URL.
   """
-  @spec head(url(), nil | headers(), adapter_opts()) :: response()
+  @spec head(url(), headers(), adapter_opts()) :: response()
   def head(url, headers \\ nil, opts \\ []) do
     request(:head, url, headers, nil, opts)
   end
@@ -51,7 +51,7 @@ defmodule AnyHttp do
   @doc """
   Makes a GET request to the given URL.
   """
-  @spec get(url(), nil | headers(), nil | body(), adapter_opts()) :: response()
+  @spec get(url(), headers(), body(), adapter_opts()) :: response()
   def get(url, headers \\ nil, body \\ nil, opts \\ []) do
     request(:get, url, headers, body, opts)
   end
@@ -59,7 +59,7 @@ defmodule AnyHttp do
   @doc """
   Makes a POST request to the given URL.
   """
-  @spec post(url(), nil | headers(), nil | body(), adapter_opts()) :: response()
+  @spec post(url(), headers(), body(), adapter_opts()) :: response()
   def post(url, headers \\ nil, body \\ nil, opts \\ []) do
     request(:post, url, headers, body, opts)
   end
@@ -67,7 +67,7 @@ defmodule AnyHttp do
   @doc """
   Makes a PUT request to the given URL.
   """
-  @spec put(url(), nil | headers(), nil | body(), adapter_opts()) :: response()
+  @spec put(url(), headers(), body(), adapter_opts()) :: response()
   def put(url, headers \\ nil, body \\ nil, opts \\ []) do
     request(:put, url, headers, body, opts)
   end
@@ -75,7 +75,7 @@ defmodule AnyHttp do
   @doc """
   Makes a PATCH request to the given URL.
   """
-  @spec patch(url(), nil | headers(), nil | body(), adapter_opts()) :: response()
+  @spec patch(url(), headers(), body(), adapter_opts()) :: response()
   def patch(url, headers \\ nil, body \\ nil, opts \\ []) do
     request(:patch, url, headers, body, opts)
   end
@@ -83,7 +83,7 @@ defmodule AnyHttp do
   @doc """
   Makes a DELETE request to the given URL.
   """
-  @spec delete(url(), nil | headers(), nil | body(), adapter_opts()) :: response()
+  @spec delete(url(), headers(), body(), adapter_opts()) :: response()
   def delete(url, headers \\ nil, body \\ nil, opts \\ []) do
     request(:delete, url, headers, body, opts)
   end

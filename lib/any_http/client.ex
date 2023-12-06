@@ -4,7 +4,6 @@ defmodule AnyHttp.Client do
   """
 
   alias AnyHttp, as: T
-  alias AnyHttp.Response
 
   ## Behaviour callbacks
 
@@ -13,6 +12,6 @@ defmodule AnyHttp.Client do
               url :: T.url(),
               headers :: T.headers(),
               body :: T.body(),
-              client_opts :: T.adapter_opts()
-            ) :: Response.t() | no_return()
+              adapter_opts :: T.adapter_opts()
+            ) :: T.response() | no_return()
 end
