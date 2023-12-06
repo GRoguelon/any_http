@@ -7,18 +7,13 @@ defmodule AnyHttp.Adapters.ReqTest do
   @req_body "Hello World!"
   @resp_body "Bye World!"
 
-  setup_all do
-    {:ok, _} = Application.ensure_all_started(:req)
-
-    :ok
-  end
-
   describe "request/5" do
     test "with method HEAD and no adapter options returns a Response", %{bypass: bypass, url: url} do
       Bypass.expect_once(bypass, "HEAD", "/hello_world", &Plug.Conn.resp(&1, 200, ""))
 
-      assert %Response{status: 200, body: nil} =
-               Subject.request(:head, url <> "/hello_world", nil, nil)
+      assert {:ok, response} = Subject.request(:head, url <> "/hello_world", nil, nil)
+      assert %Response{status: 200, body: nil} = response
+      assert Map.fetch!(response.headers, "server") == ["Cowboy"]
     end
 
     test "with method GET and no adapter options returns a Response", %{bypass: bypass, url: url} do
@@ -28,8 +23,9 @@ defmodule AnyHttp.Adapters.ReqTest do
         Plug.Conn.resp(conn, 200, @resp_body)
       end)
 
-      assert %Response{status: 200, body: @resp_body} =
-               Subject.request(:get, url <> "/hello_world", nil, @req_body)
+      assert {:ok, response} = Subject.request(:get, url <> "/hello_world", nil, @req_body)
+      assert %Response{status: 200, body: @resp_body} = response
+      assert Map.fetch!(response.headers, "server") == ["Cowboy"]
     end
 
     test "with method POST and no adapter options returns a Response", %{bypass: bypass, url: url} do
@@ -39,8 +35,9 @@ defmodule AnyHttp.Adapters.ReqTest do
         Plug.Conn.resp(conn, 201, @resp_body)
       end)
 
-      assert %Response{status: 201, body: @resp_body} =
-               Subject.request(:post, url <> "/hello_world", nil, @req_body)
+      assert {:ok, response} = Subject.request(:post, url <> "/hello_world", nil, @req_body)
+      assert %Response{status: 201, body: @resp_body} = response
+      assert Map.fetch!(response.headers, "server") == ["Cowboy"]
     end
 
     test "with method PUT and no adapter options returns a Response", %{bypass: bypass, url: url} do
@@ -50,8 +47,9 @@ defmodule AnyHttp.Adapters.ReqTest do
         Plug.Conn.resp(conn, 200, @resp_body)
       end)
 
-      assert %Response{status: 200, body: @resp_body} =
-               Subject.request(:put, url <> "/hello_world", nil, @req_body)
+      assert {:ok, response} = Subject.request(:put, url <> "/hello_world", nil, @req_body)
+      assert %Response{status: 200, body: @resp_body} = response
+      assert Map.fetch!(response.headers, "server") == ["Cowboy"]
     end
 
     test "with method PATCH and no adapter options returns a Response", %{
@@ -64,8 +62,9 @@ defmodule AnyHttp.Adapters.ReqTest do
         Plug.Conn.resp(conn, 200, @resp_body)
       end)
 
-      assert %Response{status: 200, body: @resp_body} =
-               Subject.request(:patch, url <> "/hello_world", nil, @req_body)
+      assert {:ok, response} = Subject.request(:patch, url <> "/hello_world", nil, @req_body)
+      assert %Response{status: 200, body: @resp_body} = response
+      assert Map.fetch!(response.headers, "server") == ["Cowboy"]
     end
   end
 
@@ -76,7 +75,8 @@ defmodule AnyHttp.Adapters.ReqTest do
       Plug.Conn.resp(conn, 200, @resp_body)
     end)
 
-    assert %Response{status: 200, body: @resp_body} =
-             Subject.request(:delete, url <> "/hello_world", nil, @req_body)
+    assert {:ok, response} = Subject.request(:delete, url <> "/hello_world", nil, @req_body)
+    assert %Response{status: 200, body: @resp_body} = response
+    assert Map.fetch!(response.headers, "server") == ["Cowboy"]
   end
 end
