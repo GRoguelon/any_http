@@ -3,19 +3,16 @@ defmodule AnyHttp.Response do
   Defines a generic struct to encapsulate a HTTP response.
   """
 
-  defstruct [:status, :headers, :body]
+  @enforce_keys [:status]
+  defstruct [:status, headers: nil, body: nil]
 
   ## Typespecs
 
   @type status :: 100..599
 
-  @type headers :: AnyHttp.headers()
+  @type headers :: nil | AnyHttp.headers()
 
   @type body :: nil | binary()
 
-  @type t :: %__MODULE__{
-          status: status(),
-          headers: headers(),
-          body: body()
-        }
+  @type t :: %__MODULE__{status: status(), headers: headers(), body: body()}
 end

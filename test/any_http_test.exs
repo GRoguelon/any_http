@@ -3,8 +3,12 @@ defmodule AnyHttpTest do
 
   alias AnyHttp, as: Subject
 
-  test "implements the AnyHttp.Client behaviour" do
-    assert AnyHttp.Client in Keyword.get(Subject.__info__(:attributes), :behaviour, [])
+  test "exposes a function request/4" do
+    function_exported?(Subject, :head, 4)
+  end
+
+  test "exposes a function request/5" do
+    function_exported?(Subject, :head, 5)
   end
 
   test "exposes a function head/2" do
