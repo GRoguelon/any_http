@@ -20,12 +20,6 @@ defmodule AnyHttp.ConnCase do
 
   ## Helper functions
 
-  def test_server_add(method, path \\ "/", handler) do
-    TestServer.add(path, via: method, to: handler)
-
-    TestServer.url()
-  end
-
   def get_header(headers, key) do
     headers
     |> Stream.filter(fn {header_key, _value} -> header_key == key end)
