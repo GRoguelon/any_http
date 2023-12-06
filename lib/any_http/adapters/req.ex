@@ -11,52 +11,67 @@ if Code.ensure_loaded?(Req) do
 
     @behaviour AnyHttp.Client
 
+    ## Typespec
+
+    @type request :: Req.Request.t()
+
+    ## Module attributes
+
+    @default_opts [decode_body: false]
+
     ## Public functions
 
     @impl true
-    @spec request(T.method(), T.url(), T.headers(), T.body(), T.adapter_opts()) :: Response.t()
-    def request(method, url, headers, body, client_opts \\ []) do
+    @spec request(T.method(), T.url(), T.headers(), T.body(), T.adapter_opts()) :: T.response()
+    def request(method, url, headers, body, adapter_opts \\ []) do
+      adapter_opts = Keyword.merge(@default_opts, adapter_opts)
+
       Req.new(method: method, url: url)
       |> add_req_headers(headers)
       |> add_req_body(body, method)
-      |> add_req_opts(client_opts)
+      |> add_req_opts(adapter_opts)
       |> Req.request!()
       |> parse_result()
     end
 
     ## Private functions
 
-    @spec add_req_headers(req, headers) :: req when req: Req.Request.t(), headers: T.headers()
-    defp add_req_headers(%Req.Request{} = req, headers) when is_list(headers) and headers != [] do
+    @spec add_req_headers(request(), T.headers()) :: request()
+    defp add_req_headers(req, headers) when not is_nil(headers) do
       Req.update(req, headers: headers)
     end
 
-    defp add_req_headers(%Req.Request{} = req, _headers), do: req
+    defp add_req_headers(req, _headers), do: req
 
-    @spec add_req_body(req, body, method) :: req
-          when req: Req.Request.t(), body: T.body(), method: T.method()
-    defp add_req_body(%Req.Request{} = req, body, method)
-         when not is_nil(body) and method != :head do
+    @spec add_req_body(request(), T.body(), T.method()) :: request()
+    defp add_req_body(req, body, method) when not is_nil(body) and method != :head do
       Req.update(req, body: body)
     end
 
-    defp add_req_body(%Req.Request{} = req, _body, _method), do: req
+    defp add_req_body(req, _body, _method), do: req
 
-    @spec add_req_opts(req, adapter_opts) :: req
-          when req: Req.Request.t(), adapter_opts: T.adapter_opts()
-    defp add_req_opts(%Req.Request{} = req, opts) do
-      if Keyword.keyword?(opts) and opts != [] do
+    @spec add_req_opts(request(), T.adapter_opts()) :: request()
+    defp add_req_opts(req, opts) do
+      if Keyword.keyword?(opts) do
         Req.Request.merge_options(req, opts)
       else
         req
       end
     end
 
-    @spec parse_result(Req.Response.t()) :: Response.t()
-    defp parse_result(%Req.Response{} = response) do
-      body = if(response.body != "", do: response.body)
+    @spec parse_result(Req.Response.t()) :: T.response()
+    defp parse_result(%Req.Response{status: status, headers: headers, body: body}) do
+      response = %Response{
+        status: status,
+        headers: headers,
+        body: parse_body(body)
+      }
 
-      %Response{status: response.status, headers: response.headers, body: body}
+      {:ok, response}
     end
+
+    @spec parse_body(any()) :: any()
+    defp parse_body(body) when is_binary(body) and body == "", do: nil
+    defp parse_body(body), do: body
   end
 end
