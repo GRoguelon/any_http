@@ -7,9 +7,15 @@ defmodule AnyHttp.Response do
 
   ## Typespecs
 
+  @type status :: 100..599
+
+  @type headers :: AnyHttp.headers()
+
+  @type body :: nil | binary()
+
   @type t :: %__MODULE__{
-          status: pos_integer(),
-          headers: [{binary(), binary()}],
-          body: nil | binary()
+          status: status(),
+          headers: headers(),
+          body: body()
         }
 end
