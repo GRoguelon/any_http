@@ -11,11 +11,10 @@ defmodule AnyHttp.ConnCase do
     end
   end
 
-  setup _tags do
-    # pid = Ecto.Adapters.SQL.Sandbox.start_owner!(ExApi.Repo, shared: not tags[:async])
-    # on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
-    # {:ok, conn: Phoenix.ConnTest.build_conn()}
-    :ok
+  setup do
+    bypass = Bypass.open()
+
+    {:ok, bypass: bypass, url: "http://localhost:#{bypass.port}"}
   end
 
   ## Helper functions
