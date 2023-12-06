@@ -27,11 +27,14 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v3
 
-      - name: Set up Elixir
+      - name: Set up Erlang and Elixir
+        id: beam
         uses: erlef/setup-beam@v1
         with:
-          otp-version: ${{ env.ERLANG_VERSION }}
-          elixir-version: ${{ env.ELIXIR_VERSION }}
+          version-type: "strict"
+          version-file: ".tool-versions"
+          install-hex: true
+          install-rebar: true
 
       - name: Setup the dependencies
         run: mix deps.get
@@ -47,24 +50,24 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v3
 
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
+      - name: Set up Erlang and Elixir
         id: beam
+        uses: erlef/setup-beam@v1
         with:
-          otp-version: ${{ env.ERLANG_VERSION }}
-          elixir-version: ${{ env.ELIXIR_VERSION }}
+          version-type: "strict"
+          version-file: ".tool-versions"
+          install-hex: true
+          install-rebar: true
 
-      - name: Restore dev cache
+      - name: Restore the cache
         id: cache_restore
         uses: actions/cache/restore@v3
         with:
-          key: |
-            dev-${{ runner.os }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
-          restore-keys: |
-            dev-${{ runner.os }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}-
+          key: ${{ runner.os }}-${{ runner.arch }}-erlang-${{ steps.beam.outputs.otp-version }}-elixir-${{ steps.beam.outputs.elixir-version }}-mix-dev-${{ hashFiles('mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ runner.arch }}-erlang-${{ steps.beam.outputs.otp-version }}-elixir-${{ steps.beam.outputs.elixir-version }}-mix-dev-
           path: |
             deps/
-            _build/dev
+            _build/dev/
 
       - name: Setup the dependencies
         if: steps.cache_restore.outputs.cache-hit != 'true'
@@ -74,11 +77,10 @@ jobs:
         uses: actions/cache/save@v3
         if: steps.cache_restore.outputs.cache-hit != 'true'
         with:
-          key: |
-            dev-${{ runner.os }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
+          key: ${{ runner.os }}-${{ runner.arch }}-erlang-${{ steps.beam.outputs.otp-version }}-elixir-${{ steps.beam.outputs.elixir-version }}-mix-dev-${{ hashFiles('mix.lock') }}
           path: |
             deps/
-            _build/dev
+            _build/dev/
 
       - name: Run credo
         run: mix credo --format sarif
@@ -91,25 +93,26 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v3
 
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
+      - name: Set up Erlang and Elixir
         id: beam
+        uses: erlef/setup-beam@v1
         with:
-          otp-version: ${{ env.ERLANG_VERSION }}
-          elixir-version: ${{ env.ELIXIR_VERSION }}
+          version-type: "strict"
+          version-file: ".tool-versions"
+          install-hex: true
+          install-rebar: true
 
-      - name: Restore PLT cache
-        id: cache_restore
+      - name: Restore build
         uses: actions/cache/restore@v3
+        id: cache_restore
         with:
-          key: |
-            plt-${{ runner.os }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
-          restore-keys: |
-            plt-${{ runner.os }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}-
+          fail-on-cache-miss: true
+          key: ${{ runner.os }}-${{ runner.arch }}-erlang-${{ steps.beam.outputs.otp-version }}-elixir-${{ steps.beam.outputs.elixir-version }}-mix-plts-${{ hashFiles('mix.lock') }}
+          restore-keys: ${{ runner.os }}-${{ runner.arch }}-erlang-${{ steps.beam.outputs.otp-version }}-elixir-${{ steps.beam.outputs.elixir-version }}-mix-plts-
           path: |
-            priv/plts
             deps/
-            _build/dev
+            _build/dev/
+            priv/plts/
 
       - name: Create PLTs
         if: steps.cache_restore.outputs.cache-hit != 'true'
@@ -119,12 +122,11 @@ jobs:
         uses: actions/cache/save@v3
         if: steps.cache_restore.outputs.cache-hit != 'true'
         with:
-          key: |
-            plt-${{ runner.os }}-${{ steps.beam.outputs.otp-version }}-${{ steps.beam.outputs.elixir-version }}-${{ hashFiles('**/mix.lock') }}
+          key: ${{ runner.os }}-${{ runner.arch }}-erlang-${{ steps.beam.outputs.otp-version }}-elixir-${{ steps.beam.outputs.elixir-version }}-mix-plts-${{ hashFiles('mix.lock') }}
           path: |
-            priv/plts
             deps/
-            _build/dev
+            _build/dev/
+            priv/plts/
 
       - name: Run dialyzer
         run: mix dialyzer --format github
