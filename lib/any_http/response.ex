@@ -4,15 +4,15 @@ defmodule AnyHttp.Response do
   """
 
   @enforce_keys [:status]
-  defstruct [:status, headers: nil, body: nil]
+  defstruct [:status, headers: %{}, body: nil]
 
   ## Typespecs
 
   @type status :: 100..599
 
-  @type headers :: nil | AnyHttp.headers()
+  @type headers :: %{binary() => [binary()]}
 
-  @type body :: nil | binary()
+  @type body :: term()
 
   @type t :: %__MODULE__{status: status(), headers: headers(), body: body()}
 end
