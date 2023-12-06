@@ -23,7 +23,6 @@ defmodule AnyHttp.MixProject do
   def application do
     [
       extra_applications: [:logger, :req]
-      # mod: {AnyHttp.Application, []}
     ]
   end
 
