@@ -4,125 +4,74 @@ if Code.ensure_loaded?(Req) do
     Defines the adapter for the `req` library.
     """
 
+    alias AnyHttp, as: T
     alias AnyHttp.Response
-
-    ## Typespecs
-
-    @type url :: AnyHttp.Types.url()
-
-    @type headers :: AnyHttp.Types.headers()
-
-    @type body :: AnyHttp.Types.body()
-
-    @type response :: AnyHttp.Types.response()
-
-    @type req_opts :: keyword()
 
     ## Behaviours
 
     @behaviour AnyHttp.Client
 
+    ## Typespec
+
+    @type request :: Req.Request.t()
+
+    ## Module attributes
+
+    @default_opts [decode_body: false]
+
     ## Public functions
 
     @impl true
-    @spec head(url(), headers(), req_opts()) :: {:ok, response()} | {:error, term()}
-    def head(url, headers, opts \\ []) do
-      req_opts = do_req_opts(url, headers, nil, opts)
-      result = Req.head(url, req_opts)
-      {:ok, response} = parse_result(result)
+    @spec request(T.method(), T.url(), T.headers(), T.body(), T.adapter_opts()) :: T.response()
+    def request(method, url, headers, body, adapter_opts \\ []) do
+      adapter_opts = Keyword.merge(@default_opts, adapter_opts)
 
-      # A response to a HEAD request SHOULD NOT have a body.
-      {:ok, %{response | body: nil}}
-    end
-
-    @impl true
-    @spec get(url(), headers(), body(), req_opts()) :: {:ok, response()} | {:error, term()}
-    def get(url, headers, body \\ nil, opts \\ []) do
-      req_opts = do_req_opts(url, headers, body, opts)
-      result = Req.get(url, req_opts)
-
-      parse_result(result)
-    end
-
-    @impl true
-    @spec post(url(), headers(), body(), req_opts()) :: {:ok, response()} | {:error, term()}
-    def post(url, headers, body, opts \\ []) do
-      req_opts = do_req_opts(url, headers, body, opts)
-      result = Req.post(url, req_opts)
-
-      parse_result(result)
-    end
-
-    @impl true
-    @spec put(url(), headers(), body(), req_opts()) :: {:ok, response()} | {:error, term()}
-    def put(url, headers, body, opts \\ []) do
-      req_opts = do_req_opts(url, headers, body, opts)
-      result = Req.put(url, req_opts)
-
-      parse_result(result)
-    end
-
-    @impl true
-    @spec patch(url(), headers(), body(), req_opts()) :: {:ok, response()} | {:error, term()}
-    def patch(url, headers, body, opts \\ []) do
-      req_opts = do_req_opts(url, headers, body, opts)
-      result = Req.patch(url, req_opts)
-
-      parse_result(result)
-    end
-
-    @impl true
-    @spec delete(url(), headers(), body(), req_opts()) :: {:ok, response()} | {:error, term()}
-    def delete(url, headers, body \\ nil, opts \\ []) do
-      req_opts = do_req_opts(url, headers, body, opts)
-      result = Req.delete(url, req_opts)
-
-      parse_result(result)
+      Req.new(method: method, url: url)
+      |> add_req_headers(headers)
+      |> add_req_body(body, method)
+      |> add_req_opts(adapter_opts)
+      |> Req.request!()
+      |> parse_result()
     end
 
     ## Private functions
 
-    @spec parse_result({:ok, Req.Response.t()} | {:error, Exception.t()}) :: {:ok, response()}
-    defp parse_result({:ok, %Req.Response{} = response}) do
-      {:ok, %Response{status: response.status, headers: response.headers, body: response.body}}
+    @spec add_req_headers(request(), T.headers()) :: request()
+    defp add_req_headers(req, headers) when not is_nil(headers) do
+      Req.update(req, headers: headers)
     end
 
-    @spec do_req_opts(url(), headers(), body(), req_opts()) :: req_opts()
-    defp do_req_opts(_url, headers, body, opts) do
-      opts |> filter_req_opts() |> process_headers(headers) |> process_body(body)
+    defp add_req_headers(req, _headers), do: req
+
+    @spec add_req_body(request(), T.body(), T.method()) :: request()
+    defp add_req_body(req, body, method) when not is_nil(body) and method != :head do
+      Req.update(req, body: body)
     end
 
-    @allow_list ~w[connect_options compressed decode_body pool_timeout raw receive_timeout]a
+    defp add_req_body(req, _body, _method), do: req
 
-    @spec filter_req_opts(any()) :: req_opts()
-    defp filter_req_opts(opts) when is_list(opts) do
-      Keyword.take(opts, @allow_list)
+    @spec add_req_opts(request(), T.adapter_opts()) :: request()
+    defp add_req_opts(req, opts) do
+      if Keyword.keyword?(opts) do
+        Req.Request.merge_options(req, opts)
+      else
+        req
+      end
     end
 
-    defp filter_req_opts(_opts) do
-      []
+    @spec parse_result(Req.Response.t()) :: T.response()
+    defp parse_result(%Req.Response{status: status, headers: headers, body: body}) do
+      response = %Response{
+        status: status,
+        headers: headers,
+        body: parse_body(body)
+      }
+
+      {:ok, response}
     end
 
-    @spec process_headers(req_opts(), nil | headers()) :: req_opts()
-    defp process_headers(opts, headers) when is_map(headers) do
-      headers |> Enum.to_list() |> then(&process_headers(opts, &1))
-    end
-
-    defp process_headers(opts, headers) when is_list(headers) and headers != [] do
-      [{:headers, headers} | opts]
-    end
-
-    defp process_headers(opts, _headers) do
-      opts
-    end
-
-    @spec process_body(req_opts(), body()) :: req_opts()
-    defp process_body(opts, body) when not is_nil(body) do
-      [{:body, body} | opts]
-    end
-
-    defp process_body(opts, _body) do
-      opts
-    end
+    @spec parse_body(any()) :: any()
+    defp parse_body(body) when is_binary(body) and body == "", do: nil
+    defp parse_body(body), do: body
   end
 end

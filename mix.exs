@@ -4,8 +4,8 @@ defmodule AnyHttp.MixProject do
   def project do
     [
       app: :any_http,
-      version: "0.1.1",
-      elixir: "~> 1.12",
+      version: "0.2.0",
+      elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       elixirc_options: [debug_info: Mix.env() == :dev],
       start_permanent: Mix.env() == :prod,
@@ -22,7 +22,7 @@ defmodule AnyHttp.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:inets, :logger, :public_key, :ssl]
     ]
   end
 
@@ -62,11 +62,14 @@ defmodule AnyHttp.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:bypass, "~> 2.1", only: :test},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.3", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},
+      # Req client
       {:req, "~> 0.3", optional: true},
-      {:test_server, "~> 0.1", only: [:test]}
+      # :httpc client
+      {:castore, "~> 1.0", optional: true}
     ]
   end
 end
