@@ -62,24 +62,47 @@ if Code.ensure_loaded?(Req) do
 
     @spec parse_result({:ok, Req.Response.t()}) :: {:ok, Response.t()}
     defp parse_result({:ok, %Req.Response{status: status, headers: headers, body: body}}) do
-      response = %Response{
-        status: status,
-        headers: headers,
-        body: parse_body(body)
-      }
-
-      {:ok, response}
+      {:ok,
+       %Response{
+         status: status,
+         headers: headers,
+         body: parse_body(body)
+       }}
     end
 
     @spec parse_result({:error, Exception.t()}) :: {:error, Error.t()}
-    defp parse_result({:error, exception}) do
-      error = %Error{
-        type: :exception,
-        message: Exception.message(exception),
-        original: exception
-      }
+    defp parse_result({:error, %Mint.TransportError{reason: :closed} = exception}) do
+      {:error,
+       %Error{
+         type: :socket_closed,
+         message: Exception.message(exception),
+         original: exception
+       }}
+    end
 
-      {:error, error}
+    defp parse_result({:error, %Mint.TransportError{reason: :nxdomain} = exception}) do
+      {:error,
+       %Error{
+         type: :nxdomain,
+         message: Exception.message(exception),
+         original: exception
+       }}
+    end
+
+    defp parse_result(
+           {:error,
+            %Mint.TransportError{reason: {:tls_alert, {:unknown_ca, message}}} = exception}
+         ) do
+      {:error,
+       %Error{
+         type: :unknown_ca,
+         message: List.to_string(message),
+         original: exception
+       }}
+    end
+
+    defp parse_result({:error, unknown_error}) do
+      {:error, Error.exception({:unknown_error, "unknown error", unknown_error})}
     end
 
     @spec parse_body(any()) :: any()

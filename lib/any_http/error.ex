@@ -1,9 +1,12 @@
 defmodule AnyHttp.Error do
+  require Logger
+
+  @derive {Inspect, except: [:original]}
   defexception [:type, :message, :original]
 
   ## Typespecs
 
-  @type type :: :tls_unknown_ca
+  @type type :: :nxdomain | :socket_closed | :unknown_ca | :unknown_error
 
   @type t :: %__MODULE__{
           __exception__: true,
@@ -12,18 +15,26 @@ defmodule AnyHttp.Error do
           original: term()
         }
 
+  ## Module attributes
+
+  @github_new_issue "https://github.com/GRoguelon/any_http/issues/new"
+
   ## Callback functions
 
   @impl true
   @spec exception(term()) :: t()
-  def exception(
-        {:failed_connect,
-         [{:to_address, {_host, _port}}, {:inet, [:inet], {:tls_alert, {:unknown_ca, reason}}}]} =
-          original
-      ) do
+  def exception({type, message, original}) do
+    if type == :unknown_error do
+      Logger.warning(
+        "Unknown error: #{inspect(original)}\n\n" <>
+          "If you get this message, create an issue on #{@github_new_issue} and put the " <>
+          "content of this message as description."
+      )
+    end
+
     %__MODULE__{
-      type: :tls_unknown_ca,
-      message: List.to_string(reason),
+      type: type,
+      message: message,
       original: original
     }
   end

@@ -102,8 +102,32 @@ defmodule AnyHttp.Adapters.Httpc do
   end
 
   @spec parse_result({:error, httpc_error()}) :: {:error, Error.t()}
-  defp parse_result({:error, error}) do
-    {:error, Error.exception(error)}
+  defp parse_result(
+         {:error,
+          {:failed_connect,
+           [{:to_address, {_host, _port}}, {:inet, [:inet], {:tls_alert, {:unknown_ca, message}}}]} =
+            error}
+       ) do
+    {:error, Error.exception({:unknown_ca, List.to_string(message), error})}
+  end
+
+  defp parse_result({:error, :socket_closed_remotely = error}) do
+    {:error, Error.exception({:socket_closed, "socket closed", error})}
+  end
+
+  defp parse_result(
+         {:error,
+          {:failed_connect, [{:to_address, {_host, _port}}, {:inet, [:inet], :nxdomain}]} = error}
+       ) do
+    {:error, Error.exception({:nxdomain, "non-existing domain", error})}
+  end
+
+  defp parse_result({:error, {:bad_scheme, scheme}}) do
+    raise ArgumentError, ~s<invalid scheme "#{scheme}" for url>
+  end
+
+  defp parse_result({:error, unknown_error}) do
+    {:error, Error.exception({:unknown_error, "unknown error", unknown_error})}
   end
 
   @spec parse_body(term()) :: Response.body()
