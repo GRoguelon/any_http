@@ -97,4 +97,30 @@ defmodule AnyHttp do
   def adapter do
     Application.get_env(:any_http, :client_adapter) || raise("Missing :client_adapter config")
   end
+
+  @spec to_rfc1123_date(NaiveDateTime.t()) :: charlist()
+  def to_rfc1123_date(naive_datetime, format \\ :binary)
+
+  def to_rfc1123_date(%NaiveDateTime{} = naive_datetime, :binary) do
+    naive_datetime |> to_rfc1123_date(:charlist) |> List.to_string()
+  end
+
+  def to_rfc1123_date(%NaiveDateTime{} = naive_datetime, :charlist) do
+    naive_datetime |> NaiveDateTime.to_erl() |> :httpd_util.rfc1123_date()
+  end
+
+  @spec from_rfc1123_date!(binary() | charlist()) :: NaiveDateTime.t() | no_return()
+  def from_rfc1123_date!(value) when is_binary(value) do
+    value |> String.to_charlist() |> from_rfc1123_date!()
+  end
+
+  def from_rfc1123_date!(value) do
+    case :httpd_util.convert_request_date(value) do
+      {{_year, _month, _day}, {_hour, _minute, _second}} = erl_date ->
+        NaiveDateTime.from_erl!(erl_date)
+
+      :bad_date ->
+        raise ArgumentError, "invalid value, expected valid RFC1123 date, got: `#{value}`"
+    end
+  end
 end
