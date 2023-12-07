@@ -5,6 +5,7 @@ if Code.ensure_loaded?(Req) do
     """
 
     alias AnyHttp, as: T
+    alias AnyHttp.Error
     alias AnyHttp.Response
 
     ## Behaviours
@@ -30,7 +31,7 @@ if Code.ensure_loaded?(Req) do
       |> add_req_headers(headers)
       |> add_req_body(body, method)
       |> add_req_opts(adapter_opts)
-      |> Req.request!()
+      |> Req.request()
       |> parse_result()
     end
 
@@ -59,8 +60,8 @@ if Code.ensure_loaded?(Req) do
       end
     end
 
-    @spec parse_result(Req.Response.t()) :: T.response()
-    defp parse_result(%Req.Response{status: status, headers: headers, body: body}) do
+    @spec parse_result({:ok, Req.Response.t()}) :: {:ok, Response.t()}
+    defp parse_result({:ok, %Req.Response{status: status, headers: headers, body: body}}) do
       response = %Response{
         status: status,
         headers: headers,
@@ -68,6 +69,17 @@ if Code.ensure_loaded?(Req) do
       }
 
       {:ok, response}
+    end
+
+    @spec parse_result({:error, Exception.t()}) :: {:error, Error.t()}
+    defp parse_result({:error, exception}) do
+      error = %Error{
+        type: :exception,
+        message: Exception.message(exception),
+        original: exception
+      }
+
+      {:error, error}
     end
 
     @spec parse_body(any()) :: any()

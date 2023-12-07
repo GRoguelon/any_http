@@ -4,7 +4,7 @@ defmodule AnyHttp.MixProject do
   def project do
     [
       app: :any_http,
-      version: "0.2.0",
+      version: "0.3.0",
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       elixirc_options: [debug_info: Mix.env() == :dev],
@@ -32,7 +32,7 @@ defmodule AnyHttp.MixProject do
       main: "readme",
       extras: ["README.md"],
       groups_for_modules: [
-        Adapters: [AnyHttp.Adapters.Req]
+        Adapters: [AnyHttp.Adapters.Req, AnyHttp.Adapters.Httpc]
       ]
     ]
   end
