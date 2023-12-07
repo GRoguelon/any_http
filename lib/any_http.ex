@@ -98,7 +98,7 @@ defmodule AnyHttp do
     Application.get_env(:any_http, :client_adapter) || raise("Missing :client_adapter config")
   end
 
-  @spec to_rfc1123_date(NaiveDateTime.t()) :: charlist()
+  @spec to_rfc1123_date(NaiveDateTime.t(), :binary | :charlist) :: charlist()
   def to_rfc1123_date(naive_datetime, format \\ :binary)
 
   def to_rfc1123_date(%NaiveDateTime{} = naive_datetime, :binary) do

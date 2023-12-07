@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.3.1 (2023-12-08)
+
+* **New features:**
+  * Added the functions `AnyHttp.to_rfc1123_date/1` and `AnyHttp.to_rfc1123_date/2` to convert
+  from a `NaiveDateTime` struct to a valid date as RFC1123 value
+  * Added a function `AnyHttp.to_rfc1123_datefrom_rfc1123_date!/1` to convert from a
+  RFC1123 date to a `NaiveDateTime` struct
+
+* **Changes:**
+  * Unified the errors between the adapters
+    * Added support for:
+      * `nxdomain`: Non-existing domain
+      * `socket_closed`: When the server responded with an error (i.e. a port isn't opened)
+      * `unknown_ca`: Unable to verificate TLS certificate
+      * `unknown_error`: Used when error not supported
+
 ## v0.3.0 (2023-12-08)
 
 * **New features:**
