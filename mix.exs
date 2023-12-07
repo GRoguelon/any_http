@@ -22,7 +22,7 @@ defmodule AnyHttp.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:inets, :logger, :public_key, :ssl]
     ]
   end
 
@@ -40,7 +40,7 @@ defmodule AnyHttp.MixProject do
   defp dialyzer do
     [
       plt_file: {:no_warn, "priv/plts/project.plt"},
-      plt_add_apps: [:req, :inets, :public_key]
+      plt_add_apps: [:req]
     ]
   end
 

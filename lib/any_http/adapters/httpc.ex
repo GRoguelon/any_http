@@ -47,11 +47,13 @@ defmodule AnyHttp.Adapters.Httpc do
 
   @impl true
   @spec request(T.method(), T.url(), T.headers(), T.body(), T.adapter_opts()) :: T.response()
-  def request(method, url, headers, body, _adapter_opts \\ []) do
+  def request(method, url, headers, body, adapter_opts \\ []) do
+    http_options = Keyword.merge(http_options(), adapter_opts)
+
     add_httpc_url(url)
     |> add_httpc_headers(headers)
     |> add_httpc_body(body, method)
-    |> then(&:httpc.request(method, &1, http_options(), @options))
+    |> then(&:httpc.request(method, &1, http_options, @options))
     |> parse_result()
   end
 

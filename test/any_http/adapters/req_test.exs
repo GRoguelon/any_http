@@ -7,6 +7,14 @@ defmodule AnyHttp.Adapters.ReqTest do
   @req_body "Hello World!"
   @resp_body "Bye World!"
 
+  setup_all do
+    Application.put_env(:any_http, :client_adapter, Subject)
+  end
+
+  test "ensures that the adapter is Req" do
+    assert AnyHttp.adapter() == Subject
+  end
+
   describe "request/5" do
     test "with method HEAD and no adapter options returns a Response", %{bypass: bypass, url: url} do
       Bypass.expect_once(bypass, "HEAD", "/hello_world", &Plug.Conn.resp(&1, 200, ""))
