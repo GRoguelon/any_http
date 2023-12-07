@@ -17,7 +17,11 @@ defmodule AnyHttp do
 
   @type url :: URI.t() | binary()
 
-  @type headers :: nil | Enumerable.t()
+  if System.version() |> Version.parse!() |> then(&(&1.major >= 1 and &1.minor < 14)) do
+    @type headers :: nil | Enumerable.t()
+  else
+    @type headers :: nil | Enumerable.t({binary(), binary() | [binary()]})
+  end
 
   @type body :: nil | binary()
 
