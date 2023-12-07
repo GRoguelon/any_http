@@ -4,6 +4,7 @@ defmodule AnyHttp.Adapters.Httpc do
   """
 
   alias AnyHttp, as: T
+  alias AnyHttp.Error
   alias AnyHttp.Response
 
   ## Behaviours
@@ -43,6 +44,8 @@ defmodule AnyHttp.Adapters.Httpc do
 
   @type httpc_response :: {{http_version(), status_code(), status_line()}, headers(), body()}
 
+  @type httpc_error :: term()
+
   ## Public functions
 
   @impl true
@@ -50,7 +53,8 @@ defmodule AnyHttp.Adapters.Httpc do
   def request(method, url, headers, body, adapter_opts \\ []) do
     http_options = Keyword.merge(http_options(), adapter_opts)
 
-    add_httpc_url(url)
+    url
+    |> add_httpc_url()
     |> add_httpc_headers(headers)
     |> add_httpc_body(body, method)
     |> then(&:httpc.request(method, &1, http_options, @options))
@@ -86,7 +90,7 @@ defmodule AnyHttp.Adapters.Httpc do
 
   defp add_httpc_body(request, _body, _method), do: request
 
-  @spec parse_result({:ok, httpc_response()}) :: T.response()
+  @spec parse_result({:ok, httpc_response()}) :: {:ok, Response.t()}
   defp parse_result({:ok, {{_http_version, status_code, _status_line}, headers, body}}) do
     response = %Response{
       status: status_code,
@@ -95,6 +99,11 @@ defmodule AnyHttp.Adapters.Httpc do
     }
 
     {:ok, response}
+  end
+
+  @spec parse_result({:error, httpc_error()}) :: {:error, Error.t()}
+  defp parse_result({:error, error}) do
+    {:error, Error.exception(error)}
   end
 
   @spec parse_body(term()) :: Response.body()
@@ -124,8 +133,14 @@ defmodule AnyHttp.Adapters.Httpc do
   end
 
   @spec get_first_header(headers(), charlist()) :: nil | charlist()
-  defp get_first_header(headers, key_name) do
-    Enum.find_value(headers, fn {key, value} -> key == key_name && value end)
+  defp get_first_header(headers, name) do
+    Enum.find_value(headers, fn
+      {header_name, [header_value | _]} ->
+        header_name == name && header_value
+
+      {header_name, header_value} ->
+        header_name == name && header_value
+    end)
   end
 
   @spec http_options() :: Keyword.t()
