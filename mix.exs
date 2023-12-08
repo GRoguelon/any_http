@@ -30,9 +30,9 @@ defmodule AnyHttp.MixProject do
     [
       formatters: ["html"],
       main: "readme",
-      extras: ["README.md"],
+      extras: ["README.md", "CHANGELOG.md"],
       groups_for_modules: [
-        Adapters: [AnyHttp.Adapters.Req, AnyHttp.Adapters.Httpc]
+        Adapters: [AnyHttp.Adapters.Httpc, AnyHttp.Adapters.Req, AnyHttp.Adapters.Hackney]
       ]
     ]
   end
