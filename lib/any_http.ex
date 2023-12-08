@@ -106,7 +106,10 @@ defmodule AnyHttp do
   end
 
   def to_rfc1123_date(%NaiveDateTime{} = naive_datetime, :charlist) do
-    naive_datetime |> NaiveDateTime.to_erl() |> :httpd_util.rfc1123_date()
+    naive_datetime
+    |> NaiveDateTime.to_erl()
+    |> :calendar.universal_time_to_local_time()
+    |> :httpd_util.rfc1123_date()
   end
 
   @spec from_rfc1123_date!(binary() | charlist()) :: NaiveDateTime.t() | no_return()

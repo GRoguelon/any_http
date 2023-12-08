@@ -1,11 +1,16 @@
 # Changelog
 
+## v0.3.2 (2023-12-09)
+
+* **Bug fixes:**
+  * Fixed an issue related to `AnyHttp.to_rfc1123_date/1` which was converting dates to local time
+
 ## v0.3.1 (2023-12-08)
 
 * **New features:**
   * Added the functions `AnyHttp.to_rfc1123_date/1` and `AnyHttp.to_rfc1123_date/2` to convert
   from a `NaiveDateTime` struct to a valid date as RFC1123 value
-  * Added a function `AnyHttp.to_rfc1123_datefrom_rfc1123_date!/1` to convert from a
+  * Added a function `AnyHttp.from_rfc1123_date!/1` to convert from a
   RFC1123 date to a `NaiveDateTime` struct
 
 * **Changes:**
