@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.4.0 (2023-12-09)
+
+* **New features:**
+  * Added the adapter for `:hackney`
+  * BREAKING CHANGES: Renamed the error type from `socket_closed` to `conn_refused`
+  * Added URL scheme validation
+
 ## v0.3.2 (2023-12-09)
 
 * **Bug fixes:**
