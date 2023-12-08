@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.3.2 (2023-12-09)
+
+* **Bug fixes:**
+  * Fixed an issue related to `AnyHttp.to_rfc1123_date/1` which was converting dates to local time
+
 ## v0.3.1 (2023-12-08)
 
 * **New features:**
