@@ -40,7 +40,7 @@ defmodule AnyHttp.MixProject do
   defp dialyzer do
     [
       plt_file: {:no_warn, "priv/plts/project.plt"},
-      plt_add_apps: [:req]
+      plt_add_apps: [:req, :hackney]
     ]
   end
 
@@ -69,7 +69,9 @@ defmodule AnyHttp.MixProject do
       # Req client
       {:req, "~> 0.3", optional: true},
       # :httpc client
-      {:castore, "~> 1.0", optional: true}
+      {:castore, "~> 1.0", optional: true},
+      # Hackney client
+      {:hackney, "~> 1.20", optional: true}
     ]
   end
 end
