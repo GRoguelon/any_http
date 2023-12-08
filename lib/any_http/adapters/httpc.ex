@@ -112,7 +112,7 @@ defmodule AnyHttp.Adapters.Httpc do
   end
 
   defp parse_result({:error, :socket_closed_remotely = error}) do
-    {:error, Error.exception({:socket_closed, "socket closed", error})}
+    {:error, Error.exception({:conn_refused, "connection refused", error})}
   end
 
   defp parse_result(

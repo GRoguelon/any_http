@@ -6,7 +6,7 @@ defmodule AnyHttp.Error do
 
   ## Typespecs
 
-  @type type :: :nxdomain | :socket_closed | :unknown_ca | :unknown_error
+  @type type :: :nxdomain | :conn_refused | :unknown_ca | :unknown_error
 
   @type t :: %__MODULE__{
           __exception__: true,
