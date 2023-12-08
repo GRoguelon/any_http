@@ -74,7 +74,7 @@ if Code.ensure_loaded?(Req) do
     defp parse_result({:error, %Mint.TransportError{reason: :closed} = exception}) do
       {:error,
        %Error{
-         type: :socket_closed,
+         type: :conn_refused,
          message: Exception.message(exception),
          original: exception
        }}

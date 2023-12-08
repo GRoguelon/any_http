@@ -29,16 +29,17 @@ defmodule AnyHttp do
 
   @type response :: {:ok, Response.t()} | {:error, Exception.t()}
 
+  ## Module attributes
+
+  @default_schemes ~w[http https]
+
   ## Public functions
 
   @spec request(method(), url(), headers(), body(), adapter_opts()) :: response()
   def request(method, url, headers, body, adapter_opts \\ [])
 
-  def request(method, %URI{} = uri, headers, body, adapter_opts) do
-    request(method, URI.to_string(uri), headers, body, adapter_opts)
-  end
-
   def request(method, url, headers, body, adapter_opts) do
+    url = parse_url!(url)
     headers = headers && Enum.to_list(headers)
 
     adapter().request(method, url, headers, body, adapter_opts)
@@ -124,6 +125,32 @@ defmodule AnyHttp do
 
       :bad_date ->
         raise ArgumentError, "invalid value, expected valid RFC1123 date, got: `#{value}`"
+    end
+  end
+
+  ## Private functions
+
+  @spec parse_url!(URI.t()) :: binary() | no_return()
+  defp parse_url!(%URI{} = uri) do
+    uri |> validate_scheme!() |> URI.to_string()
+  end
+
+  @spec parse_url!(binary()) :: binary() | no_return()
+  defp parse_url!(url) when is_binary(url) do
+    url |> URI.parse() |> parse_url!()
+  end
+
+  @spec validate_scheme!(URI.t()) :: URI.t() | no_return()
+  defp validate_scheme!(%URI{} = uri) do
+    case uri.scheme do
+      nil ->
+        raise ArgumentError, "scheme is required for url: #{URI.to_string(uri)}"
+
+      scheme when scheme in @default_schemes ->
+        uri
+
+      scheme ->
+        raise ArgumentError, "invalid scheme \"#{scheme}\" for url: #{URI.to_string(uri)}"
     end
   end
 end

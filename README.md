@@ -10,23 +10,25 @@ HTTP library they want to use and provide an unified interface.
 ```elixir
 def deps do
   [
-    {:any_http, "~> 0.3"}
+    {:any_http, "~> 0.4"}
   ]
 end
 ```
 
 ## Configuration
 
-### [Req](https://github.com/wojtekmach/req)
+### [:httpc](https://www.erlang.org/doc/man/httpc.html)
 
-Declare your favorite HTTP library in the configuration
+`:httpc` is already part of your application because it's part of Erlang.
 
+Change your configuration to declare Req as your adapter:
 ```elixir
-config :any_http, client_adapter: AnyHttp.Adapters.Req
+config :any_http, client_adapter: AnyHttp.Adapters.Httpc
 ```
 
-Ensure, you added the corresponding dependency for the adapter:
+### [Req](https://hexdocs.pm/req)
 
+Add Req to your `mix.exs` file:
 ```elixir
 def deps do
   [
@@ -35,12 +37,25 @@ def deps do
 end
 ```
 
-### [:httpc](https://www.erlang.org/doc/man/httpc.html)
-
-Declare your favorite HTTP library in the configuration
-
+Change your configuration to declare Req as your adapter:
 ```elixir
-config :any_http, client_adapter: AnyHttp.Adapters.Httpc
+config :any_http, client_adapter: AnyHttp.Adapters.Req
+```
+
+### [:hackney](https://hexdocs.pm/hackney/)
+
+Add Req to your `mix.exs` file:
+```elixir
+def deps do
+  [
+    {:hackney, "~> 1.20"}
+  ]
+end
+```
+
+Change your configuration to declare Req as your adapter:
+```elixir
+config :any_http, client_adapter: AnyHttp.Adapters.Hackney
 ```
 
 ## Usage
