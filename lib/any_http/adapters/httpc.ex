@@ -50,7 +50,14 @@ defmodule AnyHttp.Adapters.Httpc do
 
   @impl true
   @spec request(T.method(), T.url(), T.headers(), T.body(), T.adapter_opts()) :: T.response()
-  def request(method, url, headers, body, adapter_opts \\ []) do
+  def request(method, url, headers, body, adapter_opts \\ [])
+
+  def request(:get, _url, _headers, body, _adapter_opts) when not is_nil(body) do
+    raise ArgumentError,
+          "the Erlang :httpc library doesn't allow to send a body with the method get"
+  end
+
+  def request(method, url, headers, body, adapter_opts) do
     http_options = Keyword.merge(http_options(), adapter_opts)
 
     url
@@ -159,7 +166,10 @@ defmodule AnyHttp.Adapters.Httpc do
   @spec get_first_header(headers(), charlist()) :: nil | charlist()
   defp get_first_header(headers, name) do
     Enum.find_value(headers, fn
-      {header_name, [header_value | _]} ->
+      {header_name, header_value} when is_binary(header_value) ->
+        header_name == name && header_value
+
+      {header_name, [header_value | _]} when is_binary(header_value) ->
         header_name == name && header_value
 
       {header_name, header_value} ->

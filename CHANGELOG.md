@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.4.1 (2023-12-09)
+
+### Changes
+
+  * Added test to the adapter `:httpc`
+  * Reformated the `CHANGELOG.md`
+  * Improved documentation
+
+### Bug fixes
+
+  * Improved the internal headers management for `httpc`
+  * Added an exception `ArgumentError` if body is present when doing `:get` request
+
 ## v0.4.0 (2023-12-09)
 
 ### New features

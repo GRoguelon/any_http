@@ -4,7 +4,7 @@ defmodule AnyHttp.MixProject do
   def project do
     [
       app: :any_http,
-      version: "0.4.0",
+      version: "0.4.1",
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       elixirc_options: [debug_info: Mix.env() == :dev],
