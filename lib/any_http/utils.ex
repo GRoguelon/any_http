@@ -10,6 +10,10 @@ defmodule AnyHttp.Utils do
 
   It accepts a second argument to define if the return value should be a `string` or a `charlist`.
 
+  **Note:** The implementation relies on `:httpd_util` from Erlang but Erlang converts the value
+  into local datetime which makes the `to => from => to` inconsistent. This implementation to keep
+  the same timezone.
+
   ## Examples
 
       iex> AnyHttp.Utils.to_rfc1123_date(~N[2023-12-07 18:06:28.313171])
@@ -21,13 +25,14 @@ defmodule AnyHttp.Utils do
       iex> AnyHttp.Utils.to_rfc1123_date(~N[2023-12-07 18:06:28.313171], :charlist)
       ~c"Thu, 07 Dec 2023 18:06:28 GMT"
   """
-  @spec to_rfc1123_date(NaiveDateTime.t(), :binary | :charlist) :: charlist()
   def to_rfc1123_date(naive_datetime, format \\ :binary)
 
+  @spec to_rfc1123_date(NaiveDateTime.t(), :binary) :: binary()
   def to_rfc1123_date(%NaiveDateTime{} = naive_datetime, :binary) do
     naive_datetime |> to_rfc1123_date(:charlist) |> List.to_string()
   end
 
+  @spec to_rfc1123_date(NaiveDateTime.t(), :charlist) :: charlist()
   def to_rfc1123_date(%NaiveDateTime{} = naive_datetime, :charlist) do
     naive_datetime
     |> NaiveDateTime.to_erl()
@@ -37,6 +42,8 @@ defmodule AnyHttp.Utils do
 
   @doc """
   Converts a RFC1123 value into a `NaiveDateTime`.
+
+  Raises a `ArgumentError` exception if the value is not a valid datetime.
 
   ## Examples
 
