@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.5.0 (2023-12-14)
+
+### BREAKING CHANGES
+
+  * Moved the functions `to_rfc1123_date/1`, `to_rfc1123_date/2` and `from_rfc1123_date!/1` from
+  the module `AnyHttp` to `AnyHttp.Utils`.
+
 ## v0.4.1 (2023-12-09)
 
 ### Changes
@@ -28,16 +35,16 @@
 
 ### Bug fixes
 
-  * Fixed an issue related to `AnyHttp.to_rfc1123_date/1` which was converting dates to local time
+  * Fixed an issue related to `to_rfc1123_date/1` which was converting dates to local time
 
 ## v0.3.1 (2023-12-08)
 
 ### New features
 
-  * Added the functions `AnyHttp.to_rfc1123_date/1` and `AnyHttp.to_rfc1123_date/2` to convert
-  from a `NaiveDateTime` struct to a valid date as RFC1123 value
-  * Added a function `AnyHttp.from_rfc1123_date!/1` to convert from a
-  RFC1123 date to a `NaiveDateTime` struct
+  * Added the functions `to_rfc1123_date/1` and `to_rfc1123_date/2` to the module `AnyHttp` to
+  convert from a `NaiveDateTime` struct to a valid date as RFC1123 value
+  * Added a function `from_rfc1123_date!/1` to the module `AnyHttp` to convert from a RFC1123 date
+  to a `NaiveDateTime` struct
 
 ### Changes
 

@@ -4,7 +4,7 @@ defmodule AnyHttp.MixProject do
   def project do
     [
       app: :any_http,
-      version: "0.4.1",
+      version: "0.5.0",
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       elixirc_options: [debug_info: Mix.env() == :dev],
@@ -64,7 +64,7 @@ defmodule AnyHttp.MixProject do
     [
       {:bypass, "~> 2.1", only: :test},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.3", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.3", only: :dev, runtime: false},
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},
       # Req client
       {:req, "~> 0.3", optional: true},

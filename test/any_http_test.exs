@@ -1,29 +1,6 @@
 defmodule AnyHttpTest do
   use ExUnit.Case, async: true
 
-  @date ~N[2023-12-07 18:06:28.313171]
-  @date_as_str "Thu, 07 Dec 2023 18:06:28 GMT"
-  @date_as_char ~c"Thu, 07 Dec 2023 18:06:28 GMT"
-
-  describe "to_rfc1123_date/2" do
-    test "returns a valid RFC1123 date as charlist" do
-      assert AnyHttp.to_rfc1123_date(@date, :charlist) == @date_as_char
-    end
-
-    test "returns a valid RFC1123 date as binary" do
-      assert AnyHttp.to_rfc1123_date(@date, :binary) == @date_as_str
-    end
-  end
-
-  describe "from_rfc1123_date!/1" do
-    test "returns a valid RFC1123 date as charlist" do
-      naive_datetime = AnyHttp.from_rfc1123_date!(@date_as_char)
-
-      assert @date |> NaiveDateTime.truncate(:second) |> NaiveDateTime.compare(naive_datetime) ==
-               :eq
-    end
-  end
-
   describe "HTTP functions" do
     test "exposes a function request/4" do
       function_exported?(AnyHttp, :head, 4)
