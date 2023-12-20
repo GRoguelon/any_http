@@ -18,19 +18,21 @@ if Code.ensure_loaded?(Req) do
 
     ## Module attributes
 
-    @default_opts [decode_body: false]
+    @default_opts Application.compile_env(:any_http, :req_default_opts, [])
+
+    @default_opts Keyword.merge([decode_body: false], @default_opts)
 
     ## Public functions
 
     @impl true
     @spec request(T.method(), T.url(), T.headers(), T.body(), T.adapter_opts()) :: T.response()
     def request(method, url, headers, body, adapter_opts \\ []) do
-      adapter_opts = Keyword.merge(@default_opts, adapter_opts)
+      http_options = Keyword.merge(@default_opts, adapter_opts)
 
       Req.new(method: method, url: url)
       |> add_req_headers(headers)
       |> add_req_body(body, method)
-      |> add_req_opts(adapter_opts)
+      |> add_req_opts(http_options)
       |> Req.request()
       |> parse_result()
     end

@@ -12,15 +12,21 @@ if Code.ensure_loaded?(:hackney) do
 
     @behaviour AnyHttp.Client
 
+    ## Module attributes
+
+    @default_opts Application.compile_env(:any_http, :hackney_default_opts, [])
+
     ## Public functions
 
     @impl true
     @spec request(T.method(), T.url(), T.headers(), T.body(), T.adapter_opts()) :: T.response()
     def request(method, url, headers, body, adapter_opts \\ []) do
+      http_options = Keyword.merge(@default_opts, adapter_opts)
+
       headers = headers || []
       body = body || ""
 
-      result = :hackney.request(method, url, headers, body, adapter_opts)
+      result = :hackney.request(method, url, headers, body, http_options)
 
       parse_result(result)
     end

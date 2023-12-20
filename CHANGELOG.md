@@ -2,9 +2,16 @@
 
 ## v0.5.1 (2023-12-20)
 
+### Changes
+
+  * Allowed to provide default options by providing the configuration for:
+    * :httpc: `:httpc_default_opts`
+    * Hackney: `:hackney_default_opts`
+    * Req: `:req_default_opts`
+
 ### Bug fixes
 
-  * Fixed an issue caused by OTP 24 and `:public_key``, introduced `:tls_certificate_check`
+  * Fixed an issue caused by OTP 24 and `:public_key`, introduced `:tls_certificate_check`
 
 ## v0.5.0 (2023-12-14)
 
