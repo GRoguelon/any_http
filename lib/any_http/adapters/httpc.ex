@@ -19,6 +19,8 @@ defmodule AnyHttp.Adapters.Httpc do
 
   @content_type String.to_charlist("content-type")
 
+  @default_opts Application.compile_env(:any_http, :httpc_default_opts, [])
+
   ## Typespecs
 
   @type url :: charlist()
@@ -53,7 +55,8 @@ defmodule AnyHttp.Adapters.Httpc do
   end
 
   def request(method, url, headers, body, adapter_opts) do
-    http_options = Keyword.merge(http_options(url), adapter_opts)
+    http_options =
+      http_options(url) |> Keyword.merge(@default_opts) |> Keyword.merge(adapter_opts)
 
     url
     |> add_httpc_url()

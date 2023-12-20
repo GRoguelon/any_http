@@ -24,6 +24,9 @@ end
 Change your configuration to declare Req as your adapter:
 ```elixir
 config :any_http, client_adapter: AnyHttp.Adapters.Httpc
+
+# You can provide default options to the adapter.
+config :any_http, httpc_default_opts: []
 ```
 
 ### [Req](https://hexdocs.pm/req)
@@ -40,6 +43,9 @@ end
 Change your configuration to declare Req as your adapter:
 ```elixir
 config :any_http, client_adapter: AnyHttp.Adapters.Req
+
+# You can provide default options to the adapter.
+config :any_http, req_default_opts: []
 ```
 
 ### [:hackney](https://hexdocs.pm/hackney/)
@@ -56,6 +62,9 @@ end
 Change your configuration to declare Req as your adapter:
 ```elixir
 config :any_http, client_adapter: AnyHttp.Adapters.Hackney
+
+# You can provide default options to the adapter.
+config :any_http, hackney_default_opts: []
 ```
 
 ## Usage
