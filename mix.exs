@@ -4,7 +4,7 @@ defmodule AnyHttp.MixProject do
   def project do
     [
       app: :any_http,
-      version: "0.5.0",
+      version: "0.5.1",
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       elixirc_options: [debug_info: Mix.env() == :dev],
@@ -22,7 +22,7 @@ defmodule AnyHttp.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:inets, :logger, :public_key, :ssl]
+      extra_applications: [:inets, :logger, :ssl]
     ]
   end
 
@@ -62,16 +62,21 @@ defmodule AnyHttp.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:bypass, "~> 2.1", only: :test},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.3", only: :dev, runtime: false},
-      {:ex_doc, "~> 0.29", only: :dev, runtime: false},
+      {:tls_certificate_check, "~> 1.21"},
       # Req client
       {:req, "~> 0.3", optional: true},
-      # :httpc client
-      {:castore, "~> 1.0", optional: true},
       # Hackney client
-      {:hackney, "~> 1.20", optional: true}
+      {:hackney, "~> 1.20", optional: true},
+
+      ## Dev dependencies
+      {:dialyxir, "~> 1.3", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.29", only: :dev, runtime: false},
+
+      ## Test dependencies
+      {:bypass, "~> 2.1", only: :test},
+
+      ## Dev & Test dependencies
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 end
