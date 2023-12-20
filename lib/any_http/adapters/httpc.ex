@@ -17,11 +17,6 @@ defmodule AnyHttp.Adapters.Httpc do
 
   @options [body_format: :binary, full_result: true]
 
-  @castore if(Code.ensure_loaded?(CAStore),
-             do: {:cacertfile, CAStore.file_path()},
-             else: {:cacerts, :public_key.cacerts_get()}
-           )
-
   @content_type String.to_charlist("content-type")
 
   ## Typespecs
@@ -58,7 +53,7 @@ defmodule AnyHttp.Adapters.Httpc do
   end
 
   def request(method, url, headers, body, adapter_opts) do
-    http_options = Keyword.merge(http_options(), adapter_opts)
+    http_options = Keyword.merge(http_options(url), adapter_opts)
 
     url
     |> add_httpc_url()
@@ -177,15 +172,10 @@ defmodule AnyHttp.Adapters.Httpc do
     end)
   end
 
-  @spec http_options() :: Keyword.t()
-  defp http_options do
-    ssl = [
-      verify: :verify_peer,
-      depth: 3,
-      customize_hostname_check: [match_fun: :public_key.pkix_verify_hostname_match_fun(:https)],
-      versions: @protocol_versions
-    ]
+  @spec http_options(binary()) :: Keyword.t()
+  defp http_options(url) do
+    ssl_options = :tls_certificate_check.options(url)
 
-    [ssl: [@castore | ssl]]
+    [ssl: [{:versions, @protocol_versions} | ssl_options]]
   end
 end
