@@ -39,7 +39,6 @@ defmodule AnyHttp.MixProject do
 
   defp dialyzer do
     [
-      plt_file: {:no_warn, "priv/plts/project.plt"},
       plt_add_apps: [:req, :hackney]
     ]
   end
