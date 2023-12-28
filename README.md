@@ -78,7 +78,7 @@ AnyHttp.post(
   # Provide the HTTP headers as map or list of tuple, put nil if none
   %{"content-type" => "application/json"},
   # Provide the body, put nil if none
-  Jason.encode!(%{hello: "world"}),
+  ~s<{"hello": "world"}>,
   # Provide the adapter options, can be ommited
   receive_timeout: :timer.seconds(5)
 )
