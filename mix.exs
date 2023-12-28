@@ -1,19 +1,21 @@
 defmodule AnyHttp.MixProject do
   use Mix.Project
 
+  @version "0.6.1"
+  @github_url "https://github.com/GRoguelon/any_http"
+
   def project do
     [
       app: :any_http,
-      version: "0.6.0",
+      version: @version,
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
-      elixirc_options: [debug_info: Mix.env() == :dev],
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
       name: "Any HTTP",
       description: "Elixir library to wrap the main HTTP libraries",
-      source_url: "https://github.com/GRoguelon/any_http",
+      source_url: @github_url,
       docs: docs(),
       dialyzer: dialyzer()
     ]
@@ -39,6 +41,7 @@ defmodule AnyHttp.MixProject do
 
   defp dialyzer do
     [
+      list_unused_filters: true,
       plt_add_apps: [:req, :hackney]
     ]
   end
@@ -52,15 +55,14 @@ defmodule AnyHttp.MixProject do
       # These are the default files included in the package
       files: ~w[lib mix.exs README* LICENSE*],
       licenses: ["MIT"],
-      links: %{
-        "Github" => "https://github.com/GRoguelon/any_http"
-      }
+      links: %{"Github" => @github_url}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      # Required for :httpc client
       {:tls_certificate_check, "~> 1.21"},
       # Req client
       {:req, "~> 0.3", optional: true},
