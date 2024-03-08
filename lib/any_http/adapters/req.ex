@@ -41,14 +41,14 @@ if Code.ensure_loaded?(Req) do
 
     @spec add_req_headers(request(), T.headers()) :: request()
     defp add_req_headers(req, headers) when not is_nil(headers) do
-      Req.update(req, headers: headers)
+      req_merge(req, headers: headers)
     end
 
     defp add_req_headers(req, _headers), do: req
 
     @spec add_req_body(request(), T.body(), T.method()) :: request()
     defp add_req_body(req, body, method) when not is_nil(body) and method != :head do
-      Req.update(req, body: body)
+      req_merge(req, body: body)
     end
 
     defp add_req_body(req, _body, _method), do: req
@@ -110,5 +110,13 @@ if Code.ensure_loaded?(Req) do
     @spec parse_body(any()) :: any()
     defp parse_body(body) when is_binary(body) and body == "", do: nil
     defp parse_body(body), do: body
+
+    @req_version :req |> :application.get_key(:vsn) |> elem(1) |> List.to_string()
+
+    if Version.compare(@req_version, "0.4.12") != :lt do
+      defp req_merge(arg1, arg2), do: Req.merge(arg1, arg2)
+    else
+      defp req_merge(arg1, arg2), do: Req.update(arg1, arg2)
+    end
   end
 end
