@@ -114,13 +114,9 @@ if Code.ensure_loaded?(Req) do
     @req_version :req |> :application.get_key(:vsn) |> elem(1) |> List.to_string()
 
     if Version.compare(@req_version, "0.4.12") != :lt do
-      defp req_merge(arg1, arg2) do
-        Req.merge(arg1, arg2)
-      end
+      defp req_merge(arg1, arg2), do: Req.merge(arg1, arg2)
     else
-      defp req_merge(arg1, arg2) do
-        Req.update(arg1, arg2)
-      end
+      defp req_merge(arg1, arg2), do: Req.update(arg1, arg2)
     end
   end
 end
