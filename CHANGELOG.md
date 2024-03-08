@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.2 (2024-03-08)
+
+### Changes
+
+  * Fixed a warning when compiling Req when version is greater than `0.4.12`.
+
 ## v0.6.1 (2023-12-28)
 
 ### Changes
