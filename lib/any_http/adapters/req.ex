@@ -41,14 +41,14 @@ if Code.ensure_loaded?(Req) do
 
     @spec add_req_headers(request(), T.headers()) :: request()
     defp add_req_headers(req, headers) when not is_nil(headers) do
-      Req.update(req, headers: headers)
+      Req.merge(req, headers: headers)
     end
 
     defp add_req_headers(req, _headers), do: req
 
     @spec add_req_body(request(), T.body(), T.method()) :: request()
     defp add_req_body(req, body, method) when not is_nil(body) and method != :head do
-      Req.update(req, body: body)
+      Req.merge(req, body: body)
     end
 
     defp add_req_body(req, _body, _method), do: req
