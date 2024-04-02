@@ -14,10 +14,6 @@ concurrency:
   group: ${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
-env:
-  ERLANG_VERSION: 22.3.4.26
-  ELIXIR_VERSION: 1.12.3
-
 jobs:
   format:
     name: Format
