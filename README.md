@@ -10,7 +10,7 @@ HTTP library they want to use and provide an unified interface.
 ```elixir
 def deps do
   [
-    {:any_http, "~> 0.4"}
+    {:any_http, "~> 0.6"}
   ]
 end
 ```
